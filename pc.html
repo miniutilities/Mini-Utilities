@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - Password Strength Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            padding: 20px;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3); /* Blue shadow */
+            text-align: center;
+            transition: background-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease;
+            animation: breathing 3s ease-in-out infinite;
+        }
+
+        input[type="password"] {
+            width: 80%; /* Reduced the width */
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #00bcd4;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #555;
+            color: white;
+            transition: border-color 0.3s ease;
+            display: block;
+            margin: 10px auto; /* Center the input field */
+        }
+
+        input[type="password"]:focus {
+            border-color: #00bcd4;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+        }
+
+        .strength {
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 0;
+            transition: width 0.5s ease, background-color 0.5s ease;
+        }
+
+        .strength.weak {
+            background-color: red;
+            width: 25%;
+        }
+
+        .strength.medium {
+            background-color: orange;
+            width: 50%;
+        }
+
+        .strength.strong {
+            background-color: yellowgreen;
+            width: 75%;
+        }
+
+        .strength.very-strong {
+            background-color: green;
+            width: 100%;
+        }
+
+        .message {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .home-button i {
+            font-size: 30px;
+            color: #f3f3f3;
+        }
+
+        /* Remove hover color change for home button */
+        .home-button:hover i {
+            color: #f3f3f3; /* Keep the color same on hover */
+        }
+
+        @keyframes breathing {
+            0% { box-shadow: 0 4px 12px rgba(0, 0, 255, 0.3); }
+            50% { box-shadow: 0 8px 24px rgba(0, 0, 255, 0.5); }
+            100% { box-shadow: 0 4px 12px rgba(0, 0, 255, 0.3); }
+        }
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <div class="container">
+        <h1>Password Strength Checker</h1>
+        <input type="password" id="passwordInput" placeholder="Enter your password">
+        <div class="strength" id="strengthBar"></div>
+        <div class="message" id="strengthMessage"></div>
+    </div>
+
+    <script>
+        // Password strength checker logic
+        document.getElementById('passwordInput').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthMessage = document.getElementById('strengthMessage');
+
+            let strength = 0;
+
+            // Check for different password criteria
+            if (password.length >= 8) strength++; // length check
+            if (/[A-Z]/.test(password)) strength++; // uppercase check
+            if (/[0-9]/.test(password)) strength++; // number check
+            if (/[\W]/.test(password)) strength++; // special character check
+
+            // Update the strength bar and message with animations
+            switch (strength) {
+                case 0:
+                case 1:
+                    strengthBar.className = "strength weak";
+                    strengthMessage.textContent = "Weak";
+                    break;
+                case 2:
+                    strengthBar.className = "strength medium";
+                    strengthMessage.textContent = "Medium";
+                    break;
+                case 3:
+                    strengthBar.className = "strength strong";
+                    strengthMessage.textContent = "Strong";
+                    break;
+                case 4:
+                    strengthBar.className = "strength very-strong";
+                    strengthMessage.textContent = "Very Strong";
+                    break;
+            }
+
+            strengthMessage.classList.add('show');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - Markdown to HTML Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #282c34;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #1c1e24;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            color: #61dafb;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        textarea, .output-box {
+            width: 100%;
+            padding: 15px;
+            background: #f0f0f0;
+            border: 2px solid #61dafb;
+            border-radius: 10px;
+            font-size: 1em;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 150px;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+
+        .output-box {
+            height: 150px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            background-color: #61dafb;
+            color: #282c34;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #21a1f1;
+            transform: translateY(-3px);
+        }
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .home-button i {
+            font-size: 30px;
+            color: #f3f3f3;
+        }
+
+        /* Remove hover color change for home button */
+        .home-button:hover i {
+            color: #f3f3f3; /* Keep the color same on hover */
+        }
+
+        .copy-btn {
+            background-color: #61dafb;
+        }
+
+        .copy-btn:hover {
+            background-color: #21a1f1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <div class="container">
+        <h1>Markdown to HTML Converter</h1>
+        <textarea id="markdown" placeholder="Enter your markdown..."></textarea>
+
+        <div class="button-container">
+            <button onclick="convertMarkdown()">Convert</button>
+        </div>
+
+        <div class="output-box" id="htmlCode"></div>
+        <button class="copy-btn" onclick="copyToClipboard()">Copy HTML Code</button>
+    </div>
+
+    <script>
+        function convertMarkdown() {
+            const markdownText = document.getElementById('markdown').value;
+            const htmlText = markdownToHTML(markdownText);
+            document.getElementById('htmlCode').textContent = htmlText; // Display raw HTML code
+        }
+
+        function markdownToHTML(markdown) {
+            const html = markdown
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
+                .replace(/\*(.*)\*/gim, '<i>$1</i>')
+                .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
+                .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
+                .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+                .replace(/\n$/gim, '<br />');
+            return html.trim();
+        }
+
+        function copyToClipboard() {
+            const htmlCode = document.getElementById('htmlCode').textContent;
+            navigator.clipboard.writeText(htmlCode).then(() => {
+                alert('HTML code copied to clipboard!');
+            });
+        }
+    </script>
+
+</body>
+</html>

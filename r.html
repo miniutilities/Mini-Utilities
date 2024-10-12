@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - Paragraph Rewriter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #282c34;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #1c1e24;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            color: #61dafb;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        form label {
+            color: #61dafb;
+            font-weight: bold;
+        }
+
+        form input, form select, form textarea, form button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        form textarea {
+            height: 150px;
+            resize: vertical;
+            background: #f0f0f0;
+            border: 2px solid #61dafb;
+        }
+
+        form button {
+            background-color: #61dafb;
+            color: #282c34;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #21a1f1;
+            transform: translateY(-3px);
+        }
+
+        #result {
+            margin-top: 30px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        #result h2 {
+            margin-bottom: 10px;
+            color: #61dafb;
+        }
+
+        .result-paragraph {
+            background: #f0f0f0;
+            border: 2px solid #61dafb;
+            padding: 15px;
+            border-radius: 10px;
+            word-wrap: break-word;
+            color: #333;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .home-button i {
+            font-size: 30px;
+            color: #f3f3f3;
+        }
+
+        /* Remove hover color change for home button */
+        .home-button:hover i {
+            color: #f3f3f3; /* Keep the color same on hover */
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <div class="container">
+        <h1>Paragraph Rewriter</h1>
+        <form id="rewriterForm">
+            <label for="paragraph">Enter Paragraph:</label>
+            <textarea id="paragraph" name="paragraph" required></textarea>
+
+            <label for="style">Select Rewriting Style:</label>
+            <select id="style" name="style">
+                <option value="formal">Formal</option>
+                <option value="casual">Casual</option>
+                <option value="concise">Concise</option>
+                <option value="detailed">Detailed</option>
+            </select>
+
+            <button type="button" onclick="rewriteParagraph()">Rewrite Paragraph</button>
+        </form>
+
+        <div id="result">
+            <h2>Rewritten Paragraph:</h2>
+            <div id="rewrittenParagraph" class="result-paragraph"></div>
+        </div>
+    </div>
+
+    <script>
+        function rewriteParagraph() {
+            const paragraph = document.getElementById('paragraph').value;
+            const style = document.getElementById('style').value;
+            const rewrittenParagraphDiv = document.getElementById('rewrittenParagraph');
+
+            if (!paragraph.trim()) {
+                rewrittenParagraphDiv.innerHTML = 'Please enter a paragraph.';
+                return;
+            }
+
+            let rewrittenText = paragraph;
+
+            switch (style) {
+                case 'formal':
+                    rewrittenText = `In a more formal tone: ${paragraph.replace(/effective/g, 'efficient').replace(/successful/g, 'prosperous')}.`;
+                    break;
+                case 'casual':
+                    rewrittenText = `So, basically: ${paragraph.replace(/essential/g, 'super important').replace(/collaboration/g, 'teamwork')}.`;
+                    break;
+                case 'concise':
+                    rewrittenText = `${paragraph.split(' ').slice(0, 20).join(' ')}...`;
+                    break;
+                case 'detailed':
+                    rewrittenText = `Let's dive deeper: ${paragraph} This expanded explanation provides a thorough understanding of the topic.`;
+                    break;
+                default:
+                    rewrittenText = paragraph;
+            }
+
+            rewrittenParagraphDiv.textContent = rewrittenText;
+        }
+    </script>
+</body>
+</html>

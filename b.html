@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - Binary Translator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #181818; /* Dark mode background */
+            color: #f3f3f3; /* Light text color */
+            transition: background-color 0.5s, color 0.5s;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: #333; /* Dark mode container background */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: background 0.5s, box-shadow 0.5s, transform 0.4s;
+            max-width: 600px;
+            width: 100%;
+            animation: popUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes popUp {
+            0% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #f3f3f3; /* Light text color */
+            margin-bottom: 25px;
+            font-weight: 700;
+            transition: color 0.5s;
+        }
+
+        .converter {
+            background: #444; /* Dark mode input background */
+            border: 1px solid #555; /* Dark mode border color */
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+
+        input {
+            padding: 12px;
+            width: calc(100% - 24px);
+            margin-bottom: 15px;
+            border: 1px solid #555; /* Dark mode border color */
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: #222; /* Dark mode input background */
+            color: #f3f3f3; /* Light text color */
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .home-button i {
+            font-size: 30px;
+            color: #f3f3f3;
+        }
+
+        /* Remove hover color change for home button */
+        .home-button:hover i {
+            color: #f3f3f3; /* Keep the color same on hover */
+        }
+
+        .result {
+            margin-top: 15px;
+            font-size: 1.4rem;
+            color: #64b5f6;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        .result.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <div class="container">
+        <h1>Binary Translator</h1>
+        <div class="converter">
+            <div>
+                <input type="text" id="binary-input" placeholder="Enter binary (e.g., 01001000 01100101 01101100 01101100 01101111)">
+                <input type="text" id="text-input" placeholder="Enter text (e.g., Hello)">
+            </div>
+            <button onclick="binaryToText()">Convert Binary to Text</button>
+            <button onclick="textToBinary()">Convert Text to Binary</button>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function binaryToText() {
+            const binaryInput = document.getElementById('binary-input').value.trim();
+            const binaryArray = binaryInput.split(' ');
+            const text = binaryArray.map(bin => String.fromCharCode(parseInt(bin, 2))).join('');
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = 'Text: ' + text;
+            resultDiv.classList.add('active');
+        }
+
+        function textToBinary() {
+            const textInput = document.getElementById('text-input').value.trim();
+            const binary = textInput.split('').map(char => {
+                return char.charCodeAt(0).toString(2).padStart(8, '0');
+            }).join(' ');
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = 'Binary: ' + binary;
+            resultDiv.classList.add('active');
+        }
+    </script>
+</body>
+</html>

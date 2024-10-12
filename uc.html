@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - Unit Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #181818;
+            color: #f3f3f3;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        .container {
+            text-align: center;
+            background: #333;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: background 0.5s, box-shadow 0.5s;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #f3f3f3;
+            margin-bottom: 20px;
+            font-weight: 700;
+            transition: color 0.5s;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .button {
+            padding: 15px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #4a90e2, #357ABD);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            width: 220px;
+            max-width: 100%;
+        }
+
+        .button i {
+            font-size: 1.5rem;
+        }
+
+        .button:hover {
+            background: linear-gradient(45deg, #357ABD, #1C547D);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .home-button i {
+            font-size: 30px;
+            color: #f3f3f3;
+        }
+
+        /* Remove hover color change for home button */
+        .home-button:hover i {
+            color: #f3f3f3; /* Keep the color same on hover */
+        }
+        .converter {
+            background: #333;
+            border: 1px solid #444;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background 0.5s, box-shadow 0.5s;
+            margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #f3f3f3;
+        }
+
+        input, select {
+            padding: 10px;
+            width: calc(100% - 22px);
+            margin-bottom: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background: #222;
+            color: #f3f3f3;
+            transition: border-color 0.3s;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .result {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #64b5f6;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #4a90e2;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <div class="container">
+        <div id="home-screen">
+            <h1>Unit Converter</h1>
+            <div class="buttons">
+                <a href="#" class="button" onclick="showConverter('length-converter')">Length Converter</a>
+                <a href="#" class="button" onclick="showConverter('weight-converter')">Weight Converter</a>
+                <a href="#" class="button" onclick="showConverter('storage-converter')">Disk Storage Converter</a>
+            </div>
+        </div>
+
+        <div id="length-converter" class="converter" style="display:none;">
+            <h2>Length Converter</h2>
+            <input type="number" id="length-input" placeholder="Enter value">
+            <select id="length-from">
+                <option value="millimeters">Millimeters</option>
+                <option value="centimeters">Centimeters</option>
+                <option value="inches">Inches</option>
+                <option value="feet">Feet</option>
+                <option value="yards">Yards</option>
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="miles">Miles</option>
+            </select>
+            to
+            <select id="length-to">
+                <option value="millimeters">Millimeters</option>
+                <option value="centimeters">Centimeters</option>
+                <option value="inches">Inches</option>
+                <option value="feet">Feet</option>
+                <option value="yards">Yards</option>
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="miles">Miles</option>
+            </select>
+            <button onclick="convertLength()">Convert</button>
+            <div id="length-result" class="result"></div>
+            <a href="#" class="back-link" onclick="showHome()">Back to Home</a>
+        </div>
+
+        <div id="weight-converter" class="converter" style="display:none;">
+            <h2>Weight Converter</h2>
+            <input type="number" id="weight-input" placeholder="Enter value">
+            <select id="weight-from">
+                <option value="milligrams">Milligrams</option>
+                <option value="grams">Grams</option>
+                <option value="kilograms">Kilograms</option>
+                <option value="pounds">Pounds</option>
+                <option value="ounces">Ounces</option>
+            </select>
+            to
+            <select id="weight-to">
+                <option value="milligrams">Milligrams</option>
+                <option value="grams">Grams</option>
+                <option value="kilograms">Kilograms</option>
+                <option value="pounds">Pounds</option>
+                <option value="ounces">Ounces</option>
+            </select>
+            <button onclick="convertWeight()">Convert</button>
+            <div id="weight-result" class="result"></div>
+            <a href="#" class="back-link" onclick="showHome()">Back to Home</a>
+        </div>
+
+        <div id="storage-converter" class="converter" style="display:none;">
+            <h2>Disk Storage Converter</h2>
+            <input type="number" id="storage-input" placeholder="Enter value">
+            <select id="storage-from">
+                <option value="bytes">Bytes</option>
+                <option value="kilobytes">Kilobytes</option>
+                <option value="megabytes">Megabytes</option>
+                <option value="gigabytes">Gigabytes</option>
+                <option value="terabytes">Terabytes</option>
+            </select>
+            to
+            <select id="storage-to">
+                <option value="bytes">Bytes</option>
+                <option value="kilobytes">Kilobytes</option>
+                <option value="megabytes">Megabytes</option>
+                <option value="gigabytes">Gigabytes</option>
+                <option value="terabytes">Terabytes</option>
+            </select>
+            <button onclick="convertStorage()">Convert</button>
+            <div id="storage-result" class="result"></div>
+            <a href="#" class="back-link" onclick="showHome()">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function showConverter(converterId) {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('length-converter').style.display = 'none';
+            document.getElementById('weight-converter').style.display = 'none';
+            document.getElementById('storage-converter').style.display = 'none';
+            document.getElementById(converterId).style.display = 'block';
+        }
+
+        function showHome() {
+            document.getElementById('home-screen').style.display = 'block';
+            document.getElementById('length-converter').style.display = 'none';
+            document.getElementById('weight-converter').style.display = 'none';
+            document.getElementById('storage-converter').style.display = 'none';
+        }
+
+        function convertLength() {
+            // Conversion logic here
+        }
+
+        function convertWeight() {
+            // Conversion logic here
+        }
+
+        function convertStorage() {
+            // Conversion logic here
+        }
+    </script>
+</body>
+</html>

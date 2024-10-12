@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - Text-to-Speech Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        text-align: center; /* Center-align text */
+        width: 100%;
+        max-width: 450px;
+        transform: scale(1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
+        position: relative;
+    }
+
+    .container.dark-mode {
+        background: #2e2e2e;
+        color: #f5f5f5;
+    }
+
+    .container.dark-mode h1 {
+        color: #ffffff;
+    }
+
+    .container.dark-mode textarea {
+        border-color: #555;
+        background-color: #333;
+        color: #f5f5f5;
+    }
+
+    .container.dark-mode select {
+        border-color: #555;
+        background-color: #333;
+        color: #f5f5f5;
+    }
+
+    .container.dark-mode button {
+        background-color: #555;
+        border: 2px solid #666;
+    }
+
+    .container.dark-mode button:hover {
+        background-color: #666;
+    }
+
+    .container.dark-mode #download-link {
+        border-color: #555;
+        color: #f5f5f5;
+    }
+
+    .container.dark-mode #download-link:hover {
+        background-color: #555;
+        color: #f5f5f5;
+    }
+
+    .dark-mode-toggle {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+    }
+
+    .dark-mode-toggle label {
+        margin-right: 10px;
+    }
+
+    .dark-mode-toggle input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        transform: scale(1.2);
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 2rem;
+        transition: color 0.3s ease;
+    }
+
+    textarea {
+        width: calc(100% - 20px);
+        height: 120px;
+        padding: 15px;
+        font-size: 18px;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    textarea:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 8px rgba(0, 0, 255, 0.3);
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    select {
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        background-color: #ffffff;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    select:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 8px rgba(0, 0, 255, 0.3);
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    .home-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: none;
+        border: none;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .home-button i {
+        font-size: 30px;
+        color: #f3f3f3;
+    }
+
+    /* Remove hover color change for home button */
+    .home-button:hover i {
+        color: #f3f3f3; /* Keep the color same on hover */
+    }
+
+    #download-link {
+        margin-top: 20px;
+        display: none; /* Initially hidden */
+        color: #007bff;
+        text-decoration: none;
+        font-size: 16px;
+        border: 2px solid #007bff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #download-link:hover {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <div class="container">
+        <div class="dark-mode-toggle">
+            <label for="dark-mode-checkbox">Dark Mode</label>
+            <input type="checkbox" id="dark-mode-checkbox">
+        </div>
+        <h1>Text-to-Speech Converter</h1>
+        <textarea id="text-input" placeholder="Type your text here..."></textarea>
+        <div class="controls">
+            <select id="voice-select">
+                <option value="">Select Voice</option>
+            </select>
+            <button id="speak-btn">Speak</button>
+        </div>
+        <a id="download-link" href="#" download="speech.mp3">Download MP3</a>
+    </div>
+
+    <script>
+        // Dark Mode Toggle
+        const darkModeCheckbox = document.getElementById('dark-mode-checkbox');
+        const container = document.querySelector('.container');
+
+        darkModeCheckbox.addEventListener('change', () => {
+            if (darkModeCheckbox.checked) {
+                container.classList.add('dark-mode');
+                document.body.style.background = '#1e1e1e'; // Dark background for dark mode
+            } else {
+                container.classList.remove('dark-mode');
+                document.body.style.background = 'linear-gradient(135deg, #74ebd5, #ACB6E5)'; // Original gradient
+            }
+        });
+
+        // Text-to-Speech Converter
+        if ('speechSynthesis' in window && 'MediaRecorder' in window) {
+            const synth = window.speechSynthesis;
+            const voiceSelect = document.getElementById('voice-select');
+            const speakButton = document.getElementById('speak-btn');
+            const textInput = document.getElementById('text-input');
+            const downloadLink = document.getElementById('download-link');
+            let voices = [];
+            let mediaRecorder;
+            let audioChunks = [];
+
+            // Function to filter British male and female voices
+            function filterVoices(voices) {
+                return voices.filter(voice => {
+                    const lang = voice.lang.toLowerCase();
+                    return lang.includes('en-gb') &&
+                           (voice.name.toLowerCase().includes('male') || voice.name.toLowerCase().includes('female'));
+                });
+            }
+
+            // Function to populate the voices dropdown
+            function populateVoiceList() {
+                voices = synth.getVoices();
+                const filteredVoices = filterVoices(voices);
+
+                voiceSelect.innerHTML = ''; // Clear the dropdown first
+                filteredVoices.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    option.setAttribute('data-name', voice.name);
+                    voiceSelect.appendChild(option);
+                });
+            }
+
+            // Fetch voices when they are ready
+            populateVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+
+            // Function to start speech synthesis and recording
+            speakButton.addEventListener('click', () => {
+                const text = textInput.value;
+                if (text.trim() === '') {
+                    alert('Please enter some text.');
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                const selectedOption = voiceSelect.selectedOptions[0]?.getAttribute('data-name');
+                const selectedVoice = voices.find(voice => voice.name === selectedOption);
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+
+                // Set up MediaRecorder to capture the speech synthesis
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const destination = audioContext.createMediaStreamDestination();
+                const mediaStream = destination.stream;
+                mediaRecorder = new MediaRecorder(mediaStream);
+
+                // Reset audio chunks
+                audioChunks = [];
+
+                // Create an oscillator to match the Web Speech output to the MediaRecorder
+                const oscillator = audioContext.createOscillator();
+                oscillator.connect(destination);
+                oscillator.start();
+
+                // Listen to the data available event
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    const url = URL.createObjectURL(blob);
+                    downloadLink.href = url;
+                    downloadLink.style.display = 'inline';
+                };
+
+                // Start recording and speaking
+                mediaRecorder.start();
+                synth.speak(utterance);
+
+                // Stop recording after the utterance has finished
+                utterance.onend = () => {
+                    mediaRecorder.stop();
+                };
+            });
+        } else {
+            alert('Speech Synthesis or MediaRecorder API is not supported in this browser.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - Color Palette Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            overflow: hidden;
+            color: #333;
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-theme {
+            background: linear-gradient(135deg, #333, #555);
+            color: #ddd;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-theme .container {
+            background: rgba(50, 50, 50, 0.9);
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .dark-theme h1 {
+            color: #ddd;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+        }
+        .hint {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .dark-theme .hint {
+            color: #ddd;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        .controls label {
+            font-size: 18px;
+            color: #333;
+            margin-right: 10px;
+        }
+        .dark-theme .controls label {
+            color: #ddd;
+        }
+        .controls input[type="number"] {
+            width: 60px;
+            text-align: center;
+            padding: 8px;
+            margin-right: 10px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            background: #fff;
+            color: #333;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .dark-theme .controls input[type="number"] {
+            border-color: #ddd;
+            background: #444;
+            color: #ddd;
+        }
+        .controls input[type="number"]:focus {
+            border-color: #ff6347;
+            outline: none;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #ff6347;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .dark-theme .controls button {
+            background-color: #ff4500;
+        }
+        .controls button:hover {
+            background-color: #ff4500;
+            transform: scale(1.05);
+        }
+        .palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .color-box {
+            border-radius: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            aspect-ratio: 1 / 1; /* Ensure square aspect ratio */
+        }
+        .dark-theme .color-box {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .color-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        .color-box::after {
+            content: attr(data-hex);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 14px;
+            padding: 5px;
+            box-sizing: border-box;
+            border-radius: 0 0 8px 8px;
+        }
+        .color-box[data-size="large"] {
+            width: calc((100% / 5) - 10px); /* 5 colors per row */
+            height: auto; /* Ensure height adjusts to width */
+        }
+        .color-box[data-size="medium"] {
+            width: calc((100% / 5) - 10px); /* 5 colors per row */
+            height: auto; /* Ensure height adjusts to width */
+        }
+        .color-box[data-size="small"] {
+            width: calc((100% / 5) - 10px); /* 5 colors per row */
+            height: auto; /* Ensure height adjusts to width */
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1000;
+        }
+        .notification.show {
+            opacity: 1;
+        }
+        .error {
+            color: red;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .theme-toggle label {
+            font-size: 16px;
+            color: #333;
+            margin-right: 10px;
+        }
+        .dark-theme .theme-toggle label {
+            color: #ddd;
+        }
+        .theme-toggle input {
+            cursor: pointer;
+        }
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .home-button i {
+            font-size: 30px;
+            color: #f3f3f3;
+        }
+
+        /* Remove hover color change for home button */
+        .home-button:hover i {
+            color: #f3f3f3; /* Keep the color same on hover */
+        }
+        .dark-theme .home-button {
+            background: #444;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+        .dark-theme .home-button i {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <div class="container">
+        <div class="theme-toggle">
+            <label for="themeSwitch">Dark Mode:</label>
+            <input type="checkbox" id="themeSwitch">
+        </div>
+        <h1>Color Palette Generator</h1>
+        <div class="hint">Press the Space key to generate a new color palette!</div>
+        <div class="controls">
+            <label for="numColors">Number of colors:</label>
+            <input type="number" id="numColors" min="1" max="10" value="5">
+            <button id="generateBtn">Generate</button>
+        </div>
+        <div id="palette" class="palette"></div>
+        <div id="error" class="error"></div>
+    </div>
+
+    <div id="notification" class="notification">Color copied to clipboard!</div>
+
+    <script>
+        const paletteContainer = document.getElementById('palette');
+        const error = document.getElementById('error');
+        const notification = document.getElementById('notification');
+        const themeSwitch = document.getElementById('themeSwitch');
+
+        // Function to generate random colors
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Function to generate color palette
+        function generatePalette() {
+            const numColors = document.getElementById('numColors').value;
+            if (numColors < 1 || numColors > 10) {
+                error.textContent = 'Please enter a number between 1 and 10.';
+                return;
+            }
+            error.textContent = '';
+            paletteContainer.innerHTML = '';
+
+            for (let i = 0; i < numColors; i++) {
+                const color = getRandomColor();
+                const colorBox = document.createElement('div');
+                colorBox.classList.add('color-box');
+                colorBox.dataset.hex = color;
+                colorBox.style.backgroundColor = color;
+                colorBox.dataset.size = (numColors <= 5) ? 'large' : (numColors > 5 && numColors <= 8) ? 'medium' : 'small';
+
+                colorBox.addEventListener('click', () => copyToClipboard(color));
+                paletteContainer.appendChild(colorBox);
+            }
+        }
+
+        // Function to copy color to clipboard and show notification
+        function copyToClipboard(hexCode) {
+            navigator.clipboard.writeText(hexCode).then(() => {
+                notification.textContent = `${hexCode} copied to clipboard!`;
+                showNotification();
+            }).catch(() => {
+                notification.textContent = 'Failed to copy color.';
+                showNotification();
+            });
+        }
+
+        // Function to show notification
+        function showNotification() {
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        // Generate palette on button click
+        document.getElementById('generateBtn').addEventListener('click', generatePalette);
+
+        // Generate palette on spacebar press
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                generatePalette();
+            }
+        });
+
+        // Toggle dark mode
+        themeSwitch.addEventListener('change', () => {
+            document.body.classList.toggle('dark-theme');
+        });
+
+        // Generate initial palette
+        generatePalette();
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mu.png" type="image/png">
+    <title>Mini Utilities - URL Shortener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #282c34;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #1c1e24;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            color: #61dafb;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            max-width: 500px;
+            padding: 15px;
+            background: #f0f0f0;
+            border: 2px solid #61dafb;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            transform: translateY(-3px);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #61dafb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #4a9ecf;
+            transform: translateY(-3px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .output {
+            margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #f0f0f0;
+            background: #333;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #61dafb;
+            text-align: center;
+            position: relative;
+        }
+
+        .output a {
+            color: #66b2ff;
+            text-decoration: none;
+        }
+
+        .output a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-button {
+            background-color: #61dafb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background-color: #4a9ecf;
+            transform: translateY(-3px);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .home-button i {
+            font-size: 30px;
+            color: #f3f3f3;
+        }
+
+        .home-button:hover i {
+            color: #f3f3f3;
+        }
+    </style>
+</head>
+<body>
+    <button class="home-button" onclick="location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+    <!-- Main Container -->
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <input type="text" id="urlInput" placeholder="Enter your long URL here...">
+        <button onclick="shortenURL()">Shorten URL</button>
+        <div class="output" id="shortUrlOutput"></div>
+        <button class="copy-button" id="copyButton" style="display: none;" onclick="copyToClipboard()">Copy</button>
+    </div>
+
+    <script>
+        function shortenURL() {
+            const urlInput = document.getElementById('urlInput').value.trim();
+
+            if (!urlInput || !isValidURL(urlInput)) {
+                document.getElementById('shortUrlOutput').innerHTML = "Please enter a valid URL.";
+                document.getElementById('copyButton').style.display = 'none'; // Hide Copy button if invalid URL
+                return;
+            }
+
+            const shortUrl = "https://short.ly/" + btoa(urlInput).slice(0, 8);
+            document.getElementById('shortUrlOutput').innerHTML = `Shortened URL: <a href="${urlInput}" target="_blank">${shortUrl}</a>`;
+            document.getElementById('copyButton').style.display = 'inline-block'; // Show Copy button
+        }
+
+        function copyToClipboard() {
+            const shortUrlElement = document.getElementById('shortUrlOutput').textContent.split(': ')[1];
+            const textArea = document.createElement("textarea");
+            textArea.value = shortUrlElement;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            alert('Shortened URL copied to clipboard!');
+        }
+
+        function isValidURL(url) {
+            const pattern = new RegExp('^(https?:\\/\\/)?' +
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|(\\d{1,3}\\.){3}\\d{1,3})' +
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+                '(\\?[;&a-z\\d%_.~+=-]*)?' +
+                '(\\#[-a-z\\d_]*)?$', 'i');
+            return !!pattern.test(url);
+        }
+    </script>
+
+</body>
+</html>
